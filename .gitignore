@@ -1,160 +1,177 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+def achar_aspas(string):
+  tam=len(string)
+  l1=[]
+  aux=0
+  for p in range(0,tam):
+      lal=string[p]
+      if ord(lal)==34:
+          if aux==0:
+              l=[]
+              aux+=1
+          l.append(p)
+          if len(l)==2:
+              l1.append(l)
+              aux-=1             
+  return l1
+def encontrar_espacos_consecutivos(tex):
+  pos = []
+  con=True
+  for p in range(len(tex) - 1):
+      if tex[p] == ' ' and tex[p + 1] == ' ':
+          pos.append(p+1)
+  if len(pos)>0:
+      con=False   
+  return pos,con
+def funcao_informal(string):
+  lista_informal=[]
+  se=''
+  tam=len(string)
+  con=True
+  for p in range(0,tam):
+      if string[p].isdigit() and any(char.isalpha() for char in se):
+          lista_informal.append(p)
+      if string[p].isalpha() or string[p].isdigit():
+          se+=string[p]
+      else:
+          se=''   
+  if len(lista_informal)>0:
+      con=False      
+  return lista_informal,con
+def isUpper(g):
+  if ord(g) >= 65 and ord(g) <= 90:
+      return True
+  else:
+      return False
+def funcao_maiuscula(string):
+  lista_maiuscula=[]
+  tam=len(string)
+  con=True
+  for p in range(tam):
+      le=string[p]
+      aux=isUpper(le)
+      if aux==True:
+          cond=0
+          for f in range(p-1,0,-1):
+              le=string[f]
+              if ord (le)!=32:
+                  if ord(le)!=46:
+                      lista_maiuscula.append(p)
+                      cond+=1
+                  else:
+                      cond+=1             
+              if cond!=0:
+                  break   
+  if len(lista_maiuscula)>0:
+      con=False        
+  return lista_maiuscula,con
+def isLower(g): #funcao que verifica se a letra é minuscula
+  if ord(g) >= 97 and ord(g) <= 122:
+      return True
+  else:
+      return False  
+def funcao_Minuscula(string):
+  lista_minuscula=[] #inicializando uma lista vazia   
+  tam=len(string) #variavel que pega o tamanho da string
+  con=True
+  l1=string[0] #primeira letra do texto
+  aux=isLower(l1)#botando a primeira letra na funcao is Lower
+  if aux==True:
+      lista_minuscula.append(0) #se a primeira letra for minuscula tem erro na primeira letra      
+  for p in range(1,tam-1): #laço que pecorre a string
+      la=string[p] #letra atual
+      lp=string[p+1] #letra posterior
+      if ord(la)==46: #verifica se a letra atual é um ponto final
+          if ord (lp) == 32: #verifica se a letra posterior é um espaço em branco
+              cond=0 #variavel auxiliar que serve pra sair do laco de repetição
+              for f in range(p+1,tam): #laço de repetição que percorre a string depois do ponto até o final da string
+                  l=string[f] 
+                  if ord (l)!= 32: 
+                      aux2=isLower(l) 
+                      if aux2==True: 
+                          lista_minuscula.append(f)
+                          cond+=1
+                      else:
+                          cond+=1                           
+                  if cond!=0: 
+                      break  
+  if len(lista_minuscula)>0:
+      con=False      
+  return lista_minuscula,con
+def funcao_pontuacao(string):
+  lista_pontuacao=[]
+  tam=len(string)
+  aux=2
+  con=True
+  for p in range(1,tam-1):       
+      lean=string[p-1]
+      lea=string[p]
+      lep=string[p+1]
+      if ord(lea)==44 or ord(lea)==46:
+          aux1=isUpper(lean)
+          aux2=isLower(lean)
+          aux3=isUpper(lep)
+          aux4=isLower(lep)
+          if aux1==True or aux2==True:
+              if aux3==True or aux4==True:
+                  lista_pontuacao.append(p)                   
+          elif lean==" " and lep==" ":
+              lista_pontuacao.append(p)                
+  for p in range(0,tam):       
+      lea=string[p]
+      if ord(lea)==34:
+          aux-=1
+          if aux==1:
+              cond=p
+          elif aux==0 or aux==2:
+              aux=2
+              cond=0    
+  if aux!=0 and aux!=2:
+      lista_pontuacao.append(cond)        
+  if len(lista_pontuacao)>0:
+      con=False    
+  return lista_pontuacao,con
+def erros_aspas_indice_p(lista_erros,posicao_aspas,p):
+  li=[]
+  li2=posicao_aspas[p]
+  for it in lista_erros:
+      if not (it>=li2[0] and it<=li2[1]):
+          li.append(it)
+  return li
+def tirar_erros_entre_aspas(lista_erros,posicao_aspas):
+  li=lista_erros
+  for p in range(len(posicao_aspas)):
+      li=erros_aspas_indice_p(li,posicao_aspas,p)   
+  return li
+tex = input()
+hu,ta= funcao_pontuacao(tex)
+ho,te= funcao_Minuscula(tex)
+hi,ti=funcao_maiuscula(tex)
+he,to=funcao_informal(tex)
+ha,tu=encontrar_espacos_consecutivos(tex)
+gu=achar_aspas(tex)
+errop=tirar_erros_entre_aspas(hu,gu)
+errom=tirar_erros_entre_aspas(ho,gu)
+erroM=tirar_erros_entre_aspas(hi,gu)
+erroI=tirar_erros_entre_aspas(he,gu)
+erroEP=tirar_erros_entre_aspas(ha,gu)
+if ta==True and te==True and ti==True and to==True and tu==True:
+  print('SIM')
+else:
+  print('NAO')
+  if tu==False:
+      print('ESPACO EM BRANCO')
+      print(*erroEP)
+  if to==False:
+      print('INFORMAL')
+      print(*erroI)
+  if ti==False:
+      print('MAIUSCULA')
+      print(*erroM)
+  if te==False:
+      print('MINUSCULA')
+      print(*errom)
+  if ta==False:
+      print('PONTUACAO')
+      print(*errop)
 
-# C extensions
-*.so
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-#poetry.lock
-
-# pdm
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#pdm.lock
-#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
-#   in version control.
-#   https://pdm.fming.dev/#use-with-ide
-.pdm.toml
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
